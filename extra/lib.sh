@@ -34,7 +34,7 @@ function dl() {
 
 function dl_pipe() {
   local __url=$1
-  curl --retry 5 --retry-delay 15 -sSL "$__url"
+  curl --retry 5 --retry-delay 15 -SL "$__url"
 }
 
 function package_repo_update() {
@@ -53,7 +53,9 @@ function package() {
 
 function install_unison() {
   cd /
-  dl_pipe "https://www.archlinux.org/packages/extra/x86_64/unison/download/" | sudo tar Jx
+  # This file that is being downloaded is a zst archive, thus needs zstd to extract it
+  sudo apt-get install zstd -y
+  dl_pipe "https://www.archlinux.org/packages/extra/x86_64/unison/download/" | sudo tar -I zstd -x
 }
 
 function repo_osquery() {
